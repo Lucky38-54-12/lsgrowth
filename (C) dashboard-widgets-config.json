@@ -1,0 +1,202 @@
+{
+  "widgets": [
+    {
+      "id": "daily_calls",
+      "type": "metric",
+      "title": "Today's Calls",
+      "source": "daily_metrics",
+      "field": "calls",
+      "target": 50,
+      "icon": "📞",
+      "color": "blue",
+      "refresh_seconds": 30
+    },
+    {
+      "id": "weekly_calls",
+      "type": "metric",
+      "title": "Weekly Calls",
+      "source": "daily_metrics",
+      "field": "weekly_total",
+      "target": 350,
+      "icon": "📈",
+      "color": "green",
+      "refresh_seconds": 60
+    },
+    {
+      "id": "weekly_convos",
+      "type": "metric",
+      "title": "Conversations",
+      "source": "daily_metrics",
+      "field": "conversations",
+      "target": 100,
+      "icon": "💬",
+      "color": "purple",
+      "refresh_seconds": 60
+    },
+    {
+      "id": "meetings_booked",
+      "type": "metric",
+      "title": "Meetings Booked",
+      "source": "pipeline_status",
+      "field": "booked",
+      "target": 20,
+      "icon": "📅",
+      "color": "orange",
+      "refresh_seconds": 60
+    },
+    {
+      "id": "conversion_rate",
+      "type": "metric",
+      "title": "Conversion Rate",
+      "source": "pipeline_status",
+      "field": "conversion_percent",
+      "target": 40,
+      "icon": "🎯",
+      "color": "red",
+      "unit": "%",
+      "refresh_seconds": 60
+    },
+    {
+      "id": "pending_emails",
+      "type": "alert",
+      "title": "Pending Email Drafts",
+      "source": "email_stats",
+      "field": "pending_drafts",
+      "icon": "📧",
+      "color": "yellow",
+      "refresh_seconds": 30,
+      "action": "review_drafts"
+    },
+    {
+      "id": "stale_leads",
+      "type": "alert",
+      "title": "Stale Leads",
+      "description": "Not contacted in 7+ days",
+      "source": "pipeline_status",
+      "field": "stale_count",
+      "icon": "⚠️",
+      "color": "red",
+      "refresh_seconds": 120,
+      "action": "view_stale_leads"
+    },
+    {
+      "id": "pipeline_funnel",
+      "type": "chart",
+      "title": "Pipeline Funnel",
+      "description": "Leads by stage",
+      "source": "pipeline_status",
+      "chart_type": "funnel",
+      "refresh_seconds": 120,
+      "data_fields": ["prospect", "contacted", "follow_up", "replied", "booked", "closed"]
+    },
+    {
+      "id": "call_trends",
+      "type": "chart",
+      "title": "Call Trends (7 days)",
+      "source": "analytics",
+      "chart_type": "line",
+      "refresh_seconds": 120,
+      "data_fields": ["calls", "conversations", "meetings"]
+    },
+    {
+      "id": "day_of_week",
+      "type": "chart",
+      "title": "Best Days of Week",
+      "source": "analytics",
+      "chart_type": "bar",
+      "refresh_seconds": 120,
+      "data_fields": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    },
+    {
+      "id": "best_day_insight",
+      "type": "insight",
+      "title": "Best Performing Day",
+      "source": "analytics",
+      "icon": "⭐",
+      "refresh_seconds": 120
+    },
+    {
+      "id": "conversion_insight",
+      "type": "insight",
+      "title": "Conversion Insight",
+      "source": "analytics",
+      "icon": "💡",
+      "refresh_seconds": 120
+    },
+    {
+      "id": "trend_insight",
+      "type": "insight",
+      "title": "Trend Analysis",
+      "source": "analytics",
+      "icon": "📊",
+      "refresh_seconds": 120
+    }
+  ],
+  "layout": {
+    "grid": 12,
+    "rows": [
+      {
+        "height": 80,
+        "widgets": [
+          { "id": "daily_calls", "width": 3 },
+          { "id": "weekly_calls", "width": 3 },
+          { "id": "weekly_convos", "width": 3 },
+          { "id": "meetings_booked", "width": 3 }
+        ]
+      },
+      {
+        "height": 80,
+        "widgets": [
+          { "id": "conversion_rate", "width": 3 },
+          { "id": "pending_emails", "width": 4 },
+          { "id": "stale_leads", "width": 5 }
+        ]
+      },
+      {
+        "height": 300,
+        "widgets": [
+          { "id": "call_trends", "width": 6 },
+          { "id": "pipeline_funnel", "width": 6 }
+        ]
+      },
+      {
+        "height": 250,
+        "widgets": [
+          { "id": "day_of_week", "width": 12 }
+        ]
+      },
+      {
+        "height": 120,
+        "widgets": [
+          { "id": "best_day_insight", "width": 4 },
+          { "id": "conversion_insight", "width": 4 },
+          { "id": "trend_insight", "width": 4 }
+        ]
+      }
+    ]
+  },
+  "data_sources": [
+    {
+      "name": "daily_metrics",
+      "endpoint": "/api/dashboard/metrics",
+      "refresh_seconds": 60
+    },
+    {
+      "name": "pipeline_status",
+      "endpoint": "/api/dashboard/pipeline",
+      "refresh_seconds": 120
+    },
+    {
+      "name": "email_stats",
+      "endpoint": "/api/dashboard/emails",
+      "refresh_seconds": 30
+    },
+    {
+      "name": "analytics",
+      "endpoint": "/api/dashboard/analytics",
+      "refresh_seconds": 120
+    }
+  ],
+  "status": "READY_TO_ACTIVATE",
+  "notes": "All widgets configured but not activated. Run dashboard-integration.js to push data."
+}
