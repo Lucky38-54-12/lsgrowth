@@ -105,7 +105,7 @@ export default async function OutreachPage({
   const queue: QueueItem[] = allLeads
     .map((lead) => {
       const step = nextStepFor(lead);
-      if (!step) return null;
+      if (!step || step === "checkin") return null;
       const { subject, html } = renderTemplate(step, {
         company: lead.company,
         contact_name: lead.contact_name || "there",

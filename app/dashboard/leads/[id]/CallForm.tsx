@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { EmailEvent, EmailSend, Lead } from "@/lib/types";
+import { CallPrepSheet, EmailEvent, EmailSend, Lead } from "@/lib/types";
 import { deviceFromUserAgent, formatDateTime } from "@/lib/format";
 import Topbar from "@/components/Topbar";
+import OnboardingPanel from "../../onboarding/OnboardingPanel";
 
 const L = { surface: "#ffffff", border: "#e2e8f0", text: "#0f172a", muted: "#64748b", dimmed: "#94a3b8" };
 
@@ -15,7 +16,7 @@ const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: "sequence_complete", label: "Sequence complete" },
 ];
 
-export default function CallForm({ lead, events, sends }: { lead: Lead; events: EmailEvent[]; sends: EmailSend[] }) {
+export default function CallForm({ lead, events, sends, callPrepSheet }: { lead: Lead; events: EmailEvent[]; sends: EmailSend[]; callPrepSheet: CallPrepSheet | null }) {
   const router = useRouter();
   const [callNotes, setCallNotes] = useState("");
   const [meetingDateTime, setMeetingDateTime] = useState("");
@@ -59,6 +60,28 @@ export default function CallForm({ lead, events, sends }: { lead: Lead; events: 
 
       <div style={{ maxWidth: 720, margin: "32px auto", padding: "0 28px" }}>
         {error && <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", padding: "10px 16px", borderRadius: 0, marginBottom: 18, fontSize: 14 }}>{error}</div>}
+
+        <div style={{ background: L.surface, border: `1px solid ${L.border}`, borderRadius: 0, padding: 24, marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase", color: L.muted, fontWeight: 800, marginBottom: 4 }}>Call Prep Sheet</div>
+            <p style={{ fontSize: 13, color: L.muted }}>
+              {lead.call_prep_sheet_id ? "This lead has a discovery call prep sheet." : "No call prep sheet yet for this lead."}
+            </p>
+          </div>
+          {lead.call_prep_sheet_id ? (
+            <a href={`/dashboard/call-prep/${lead.call_prep_sheet_id}`} className="btn-lift" style={{
+              padding: "9px 16px", background: "#0f172a", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, textDecoration: "none",
+            }}>Open sheet</a>
+          ) : (
+            <a
+              href={`/dashboard/call-prep/new?${new URLSearchParams({ lead_id: lead.lead_id, business_name: lead.company, website: lead.website || "", contact_name: lead.contact_name || "", phone: lead.phone || "", email: lead.email || "", cold_call_notes: lead.notes || "" }).toString()}`}
+              className="btn-lift"
+              style={{ padding: "9px 16px", background: "#0f172a", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, textDecoration: "none" }}
+            >Create sheet</a>
+          )}
+        </div>
+
+        <OnboardingPanel lead={lead} callPrepSheet={callPrepSheet} />
 
         <form onSubmit={handleSubmit}>
           <div style={{ background: L.surface, border: `1px solid ${L.border}`, borderRadius: 0, padding: 24, marginBottom: 20 }}>

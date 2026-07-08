@@ -1,5 +1,5 @@
 "use client";
-import { Bell, Search, Plus, X, LayoutDashboard, Users, Send, FileText, UserPlus, Upload, MailOpen, Phone, Calendar, Sun, Inbox, ScanSearch, ListChecks } from "lucide-react";
+import { Bell, Search, Plus, X, LayoutDashboard, Users, Send, FileText, UserPlus, MailOpen, Phone, Calendar, Sun, Inbox, ScanSearch, ListChecks, NotebookPen, UserCheck, ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -7,6 +7,9 @@ const SEARCH_ITEMS = [
   { label: "Today", href: "/dashboard/today", icon: Sun },
   { label: "Pipeline", href: "/dashboard", icon: LayoutDashboard },
   { label: "Contacts", href: "/dashboard/contacts", icon: Users },
+  { label: "Prospects", href: "/dashboard/prospects", icon: UserCheck },
+  { label: "Call Prep", href: "/dashboard/call-prep", icon: NotebookPen },
+  { label: "Onboarding", href: "/dashboard/onboarding", icon: ClipboardList },
   { label: "Calendar", href: "/dashboard/calendar", icon: Calendar },
   { label: "Inbox", href: "/dashboard/inbox", icon: Inbox },
   { label: "Email Outreach", href: "/dashboard/send", icon: Send },
@@ -15,7 +18,6 @@ const SEARCH_ITEMS = [
   { label: "Cold Call", href: "/dashboard/cold-call", icon: Phone },
   { label: "Scraper", href: "/dashboard/scraper", icon: ScanSearch },
   { label: "Add Lead", href: "/dashboard/new", icon: UserPlus },
-  { label: "Lead Sheets", href: "/dashboard/import", icon: Upload },
   { label: "Email Tracking", href: "/dashboard/warm", icon: MailOpen },
 ];
 

@@ -1,7 +1,7 @@
 import { createSupabaseClient } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import CallForm from "./CallForm";
-import { EmailEvent, EmailSend, Lead } from "@/lib/types";
+import { CallPrepSheet, EmailEvent, EmailSend, Lead } from "@/lib/types";
 
 export const revalidate = 0;
 
@@ -13,5 +13,12 @@ export default async function LeadCallPage({ params }: { params: { id: string } 
     sb.from("email_sends").select("*").eq("lead_id", params.id).order("sent_at", { ascending: false }),
   ]);
   if (!lead) notFound();
-  return <CallForm lead={lead as Lead} events={(events || []) as EmailEvent[]} sends={(sends || []) as EmailSend[]} />;
+
+  let callPrepSheet: CallPrepSheet | null = null;
+  if ((lead as Lead).call_prep_sheet_id) {
+    const { data } = await sb.from("call_prep_sheets").select("*").eq("id", (lead as Lead).call_prep_sheet_id).single();
+    callPrepSheet = (data as CallPrepSheet) || null;
+  }
+
+  return <CallForm lead={lead as Lead} events={(events || []) as EmailEvent[]} sends={(sends || []) as EmailSend[]} callPrepSheet={callPrepSheet} />;
 }
