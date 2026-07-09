@@ -289,6 +289,7 @@ export default async function OutreachPage({
                   : "All caught up — no emails scheduled for tomorrow."}
               </p>
             </div>
+            <SendButton due={queue.length} />
           </div>
 
           {segments.length > 0 && (

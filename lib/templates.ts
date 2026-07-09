@@ -8,6 +8,7 @@ interface TemplateData {
   cta_link: string;
   pixel: string;
   personalization?: string;
+  unsubscribe_link?: string;
 }
 
 // Fallback used only when no AI-generated personalization hook exists yet
@@ -25,6 +26,14 @@ function fill(tpl: string, d: TemplateData) {
     .replace(/\{\{cta_link\}\}/g, d.cta_link)
     .replace(/\{\{pixel\}\}/g, d.pixel)
     .replace(/\{\{personalization\}\}/g, d.personalization || genericPersonalizationFallback(d));
+}
+
+// NZ's Unsolicited Electronic Messages Act requires a functional unsubscribe
+// facility on commercial electronic messages — appended centrally here so
+// every template gets it without duplicating markup in each one.
+function withUnsubscribeFooter(html: string, unsubscribeLink: string): string {
+  const footer = `<p style="font-size:11px;color:#94a3b8;margin-top:18px;">Don't want these emails? <a href="${unsubscribeLink}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a></p>`;
+  return html.replace(/<\/div>\s*$/, `${footer}\n</div>`);
 }
 
 export function htmlToText(html: string) {
@@ -315,8 +324,9 @@ export function renderTemplate(
 ): { subject: string; html: string; text: string } {
   const tmpl = INDUSTRY_TEMPLATES[industryKey(data.trade)][step];
   const subject = fill(tmpl.subject, data);
-  const html = fill(tmpl.html, data);
-  const text = htmlToText(fill(tmpl.html, { ...data, pixel: "" }));
+  const unsubscribeLink = data.unsubscribe_link || "#";
+  const html = withUnsubscribeFooter(fill(tmpl.html, data), unsubscribeLink);
+  const text = htmlToText(withUnsubscribeFooter(fill(tmpl.html, { ...data, pixel: "" }), unsubscribeLink));
   return { subject, html, text };
 }
 
