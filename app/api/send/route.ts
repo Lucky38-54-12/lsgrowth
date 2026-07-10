@@ -43,8 +43,15 @@ async function buildQueue(sb: ReturnType<typeof createSupabaseClient>, leadIds?:
     return due.filter((d) => idSet.has(d.lead.lead_id));
   }
 
-  due.sort((a, b) => priorityDate(a.lead) - priorityDate(b.lead));
-  return due.slice(0, DAILY_LIMIT);
+  // Automatic sweeps (cron + unscoped manual trigger) only touch leads that
+  // are explicitly enrolled in a campaign — otherwise every dormant lead in
+  // the table (old trades, pre-campaign imports) gets swept up as "due" the
+  // moment it crosses a day threshold, regardless of whether that trade's
+  // campaign is actually active.
+  const campaignDue = due.filter((d) => !!d.lead.campaign_id);
+
+  campaignDue.sort((a, b) => priorityDate(a.lead) - priorityDate(b.lead));
+  return campaignDue.slice(0, DAILY_LIMIT);
 }
 
 async function handleSend(leadIds?: string[]) {
